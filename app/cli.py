@@ -8,7 +8,7 @@ from sqlmodel import select
 # Import models FIRST to register with SQLModel
 from app.models import Workout
 from app.database import create_db_and_tables, get_cli_session, drop_all
-from app.auth import encrypt_password
+#from app.auth import encrypt_password
 from tabulate import tabulate
 
 cli = typer.Typer()
