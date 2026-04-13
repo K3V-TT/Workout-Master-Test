@@ -1,30 +1,74 @@
 {% extends "authenticated-base.html" %}
 
-{% block external_js %}
-<script src="{{ url_for('static', path='js/app.js')}}"></script>
-{% endblock %}
-
+{% block title %}Workout Master Home{% endblock %}
 
 {% block subpage_content %}
-
-    <div class="container" id="content">
-        <div class="row">
-            <p>
-                This is table is rendered on the Client. JavaScript code requests the data from <a href="/api/users">/api/users</a> and writes it to this page.
-            </p>
-        </div>
-        <div class="row">
-            <table class="table table-striped">
-                <thead>
-                  <tr>
-                    <th>Id</th><th>Username</th>
-                  </tr>
-                </thead>
-                <tbody id="result">
-                
-                <tbody>
-            </table>
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="display-6">Workout Master</h1>
+            <p class="lead">Browse workouts, create workout routines, and remix your favorite exercises.</p>
         </div>
     </div>
 
+    <div class="row gy-4">
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Browse workouts</h5>
+                    <p class="card-text">Explore the full workout library and add exercises to your training plans.</p>
+                    <a href="/workouts" class="btn btn-primary">Browse workouts</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Create routines</h5>
+                    <p class="card-text">Start new workout routines to organize your weekly training.</p>
+                    <a href="/routines" class="btn btn-primary">Create routine</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title">View routines</h5>
+                    <p class="card-text">Open your saved routines and remix exercises with alternative workouts.</p>
+                    <a href="/routines" class="btn btn-primary">View routines</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            <h5 class="card-title mb-0">My routines</h5>
+                            <p class="text-muted mb-0">Quick access to your saved training plans.</p>
+                        </div>
+                        <a href="/routines" class="btn btn-outline-primary btn-sm">Manage routines</a>
+                    </div>
+                    {% if routines %}
+                        <div class="list-group">
+                            {% for routine in routines %}
+                                <a href="/routines/{{ routine.id }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                    <span>{{ routine.name }}</span>
+                                    <span class="badge bg-primary rounded-pill">View</span>
+                                </a>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info mb-0">
+                            You don't have any routines yet. Create your first routine on the Routines page.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

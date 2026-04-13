@@ -69,16 +69,27 @@
 <div id="wrapper">
 
     <nav id="sidebar" class="p-3 d-flex flex-column vh-100">
-        <h4 class="text-white mb-4 text-center py-4">Project Template</h4>
+        <h4 class="text-white mb-4 text-center py-4">Workout Master</h4>
 
         <ul class="nav nav-pills flex-column gap-2 flex-grow-1">
             <li class="nav-item">
                 <a class="nav-link d-flex align-items-center {{ 'active' if request.path == '/app' }}" href="/app">
-                    <span class="material-symbols-outlined me-2">people</span>
-                    Users
+                    <span class="material-symbols-outlined me-2">dashboard</span>
+                    Home
                 </a>
             </li>
-            
+            <li class="nav-item">
+                <a class="nav-link d-flex align-items-center {{ 'active' if request.path.startswith('/workouts') }}" href="/workouts">
+                    <span class="material-symbols-outlined me-2">fitness_center</span>
+                    Workouts
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link d-flex align-items-center {{ 'active' if request.path.startswith('/routines') }}" href="/routines">
+                    <span class="material-symbols-outlined me-2">playlist_add_check</span>
+                    Routines
+                </a>
+            </li>
             <li class="nav-item mt-auto">
                 <a class="nav-link d-flex align-items-center text-danger" href="/logout">
                     <span class="material-symbols-outlined me-2">logout</span>

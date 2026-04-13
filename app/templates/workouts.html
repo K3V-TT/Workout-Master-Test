@@ -1,0 +1,73 @@
+{% extends "authenticated-base.html" %}
+
+{% block title %}Browse Workouts{% endblock %}
+
+{% block subpage_content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-12 d-flex justify-content-between align-items-center">
+            <div>
+                <h2>Workout Library</h2>
+                <p class="text-muted mb-0">Browse all workouts and add them to your routines.</p>
+            </div>
+            <a href="/routines" class="btn btn-outline-primary">My routines</a>
+        </div>
+    </div>
+
+    {% if not routines %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="alert alert-warning">
+                You don't have any routines yet. Create a routine first before adding workouts.
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="row">
+        <div class="col-12">
+            <div class="table-responsive shadow-sm rounded-3 bg-white p-3">
+                <table class="table table-hover align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Type</th>
+                            <th>Body part</th>
+                            <th>Equipment</th>
+                            <th>Level</th>
+                            <th class="text-end">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for workout in workouts %}
+                        <tr>
+                            <td>{{ workout.title }}</td>
+                            <td>{{ workout.type }}</td>
+                            <td>{{ workout.body_part }}</td>
+                            <td>{{ workout.equipment }}</td>
+                            <td>{{ workout.level }}</td>
+                            <td>
+                                {% if routines %}
+                                <form method="post" action="/routines/add" class="d-flex gap-2 align-items-center justify-content-end">
+                                    <input type="hidden" name="workout_id" value="{{ workout.id }}">
+                                    <select class="form-select form-select-sm" name="routine_id" required>
+                                        <option value="" disabled selected>Add to routine</option>
+                                        {% for routine in routines %}
+                                        <option value="{{ routine.id }}">{{ routine.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <button class="btn btn-sm btn-primary" type="submit">Add</button>
+                                </form>
+                                {% else %}
+                                <span class="text-muted">Create a routine first.</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

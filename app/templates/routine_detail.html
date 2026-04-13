@@ -1,0 +1,101 @@
+{% extends "authenticated-base.html" %}
+
+{% block title %}Routine: {{ routine.name }}{% endblock %}
+
+{% block subpage_content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2>{{ routine.name }}</h2>
+            <p class="text-muted">{{ routine.description or 'No routine description provided.' }}</p>
+        </div>
+        <div class="col-md-4 text-md-end">
+            <a href="/routines" class="btn btn-outline-secondary">Back to routines</a>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Add workout to routine</h5>
+                    {% if available_workouts %}
+                    <form method="post" action="/routines/add">
+                        <input type="hidden" name="routine_id" value="{{ routine.id }}">
+                        <div class="mb-3">
+                            <label class="form-label">Workout</label>
+                            <select class="form-select" name="workout_id" required>
+                                <option value="" selected disabled>Select a workout</option>
+                                {% for workout in available_workouts %}
+                                <option value="{{ workout.id }}">{{ workout.title }} ({{ workout.body_part }})</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add workout</button>
+                    </form>
+                    {% else %}
+                    <div class="alert alert-info mb-0">
+                        All workouts are already present in this routine. Browse the workout library to add new exercises to different routines.
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Routine summary</h5>
+                    <p class="mb-1"><strong>Workouts in routine:</strong> {{ routine_rows|length }}</p>
+                    <p class="mb-0 text-muted">Add, remove, or remix exercise selections from this routine.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            {% if routine_rows %}
+                <div class="row g-4">
+                    {% for association, workout in routine_rows %}
+                        <div class="col-12">
+                            <div class="card shadow-sm">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start flex-column flex-md-row gap-3">
+                                        <div>
+                                            <h5 class="mb-1">{{ workout.title }}</h5>
+                                            <div class="text-muted small">{{ workout.type }} • {{ workout.body_part }} • {{ workout.level }}</div>
+                                        </div>
+                                        <form method="post" action="/routines/{{ routine.id }}/remove" class="mb-0">
+                                            <input type="hidden" name="association_id" value="{{ association.id }}">
+                                            <button class="btn btn-sm btn-outline-danger" type="submit">Remove</button>
+                                        </form>
+                                    </div>
+                                    <p class="mt-3 mb-3">{{ workout.description or 'No workout description available.' }}</p>
+                                    <form method="post" action="/routines/{{ routine.id }}/remix" class="row g-2 align-items-center">
+                                        <input type="hidden" name="association_id" value="{{ association.id }}">
+                                        <div class="col-md-8">
+                                            <select class="form-select form-select-sm" name="replacement_workout_id" required>
+                                                <option value="" selected disabled>Replace with alternative workout</option>
+                                                {% for alternative in alternative_workouts[association.id] %}
+                                                <option value="{{ alternative.id }}">{{ alternative.title }} ({{ alternative.body_part }})</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <button class="btn btn-sm btn-outline-primary w-100" type="submit" {% if not alternative_workouts[association.id] %}disabled{% endif %}>Remix</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="alert alert-warning">
+                    This routine is empty. Add workouts from the list above to start building your plan.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
