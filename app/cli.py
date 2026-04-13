@@ -42,10 +42,21 @@ def initialize():
             bob_db = User.model_validate(bob)
 
             db.add(bob_db)
-            db.commit()      
+            db.commit()
+
+            inserted_titles = set()
 
             for row in csv_reader:
                 try:
+                    title = row.get('Title', '').strip()
+                    if not title:
+                        typer.echo("Skipping row with empty title.")
+                        continue
+
+                    if title in inserted_titles:
+                        typer.echo(f"Skipping duplicate workout title: {title}")
+                        continue
+
                     # Handle empty rating field
                     rating = row.get('Rating', '')
                     if rating and rating.strip():
@@ -68,7 +79,7 @@ def initialize():
                     
                     # Create Workout object
                     workout = Workout(
-                        title=row['Title'],
+                        title=title,
                         description=description,
                         type=row['Type'],
                         body_part=row['BodyPart'],
@@ -79,6 +90,7 @@ def initialize():
                     )
                     
                     db.add(workout)
+                    inserted_titles.add(title)
                     
                 except (ValueError, KeyError) as e:
                     typer.echo(f"Error processing row for {row.get('Title', 'Unknown')}: {e}")
